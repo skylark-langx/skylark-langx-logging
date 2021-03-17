@@ -8,10 +8,10 @@ define([
 
     let history = [];
  
-    const LogByTypeFactory = (name, log) => (type, level, args) => {
+    const LogByTypeFactory = (name) => (type, level, args) => {
         const lvl = levels[level];
         const lvlRegExp = new RegExp(`^(${ lvl })$`);
-        if (type !== 'log') {
+        if (type !== 'debug') {
             args.unshift(type.toUpperCase() + ':');
         }
         args.unshift(name + ':');
@@ -39,7 +39,7 @@ define([
         _construct : function(name) {
             this.name = name;
 
-            this._logByType = LogByTypeFactory(name, log);
+            this._logByType = LogByTypeFactory(name);
         },
 
         level : function(lvl) {
@@ -68,10 +68,13 @@ define([
             this._logByType('info', this._level, args);
         },
 
+        history : function() {
+            return history ? [].concat(history) : [];
+        },
 
         createLogger : function(subname) {
             return new Logger(this.name ? this.name  + ': ' + subname : subname);   
-        },
+        }
 
     });
 
